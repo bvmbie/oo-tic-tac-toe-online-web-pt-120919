@@ -27,21 +27,21 @@ class TicTacToe
   user_input.to_i - 1
   end
   
-  def move(board, index, current_player)
-  board[index] = current_player
+  def move(index, current_player = "X")
+  @board[index] = current_player
 end
 
-def position_taken?(board, index)
-  !(board[index].nil? || board[index] == " ")
+def position_taken?(index)
+  !(@board[index].nil? || @board[index] == " ")
 end
 
-def valid_move?(board, index)
-  index.between?(0,8) && !position_taken?(board, index)
+def valid_move?(index)
+  index.between?(0,8) && !position_taken?(index)
 end
 
-def turn_count(board)
+def turn_count
   turn = 0
-  board.each do |index|
+  @board.each do |index|
     if index == "X" || index == "O"
       turn += 1
     end
@@ -49,9 +49,9 @@ def turn_count(board)
   return turn
 end
 
-def current_player(board)
+def current_player
   #if the turn count is an even number, that means O just went, so the next/current player is X
-  num_turns = turn_count(board)
+  num_turns = turn_count
   if num_turns % 2 == 0
     player = "X"
   else
@@ -60,28 +60,28 @@ def current_player(board)
   return player
 end
 
-def turn(board)
+def turn
   puts "Please choose a number 1-9:"
   user_input = gets.chomp
   index = input_to_index(user_input)
-  if valid_move?(board, index)
-    player_token = current_player(board)
-    move(board, index, player_token)
-    display_board(board)
+  if valid_move?(index)
+    player_token = current_player
+    move(index, player_token)
+    display_board
   else
-    turn(board)
+    turn
   end
 end
 
-def won?(board)
+def won?
   WIN_COMBINATIONS.each {|win_combo|
     index_0 = win_combo[0]
     index_1 = win_combo[1]
     index_2 = win_combo[2]
 
-    position_1 = board[index_0]
-    position_2 = board[index_1]
-    position_3 = board[index_2]
+    position_1 = @board[index_0]
+    position_2 = @board[index_1]
+    position_3 = @board[index_2]
 
     if position_1 == "X" && position_2 == "X" && position_3 == "X"
       return win_combo
@@ -92,33 +92,33 @@ def won?(board)
   return false
 end
 
-def full?(board)
-  board.all? {|index| index == "X" || index == "O"}
+def full?
+  @board.all? {|index| index == "X" || index == "O"}
 end
 
-def draw?(board)
-  if !won?(board) && full?(board)
+def draw?
+  if !won? && full?
     return true
   else
     return false
   end
 end
 
-def over?(board)
-  if won?(board) || draw?(board)
+def over?
+  if won? || draw?
     return true
   else
     return false
   end
 end
 
-def winner (board)
+def winner
   index = []
-  index = won?(board)
+  index = won?
   if index == false
     return nil
   else
-    if board[index[0]] == "X"
+    if @board[index[0]] == "X"
       return "X"
     else
       return "O"
@@ -126,17 +126,16 @@ def winner (board)
   end
 end
 
-def play(board)
-  until over?(board) == true
-    turn(board)
+def play
+  until over? == true
+    turn
   end
 
-  if won?(board)
-    puts "Congratulations #{winner(board)}!"
-  elsif draw?(board)
-    puts "Cats Game!"
+  if won?
+    puts "Congratulations #{winner}!"
+  elsif draw?
+    puts "Cat's Game!"
   end
 end
-  
-  
+
 end
